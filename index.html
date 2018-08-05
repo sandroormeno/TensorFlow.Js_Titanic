@@ -1,0 +1,182 @@
+<html>
+  <head>
+    <script  src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.2"></script>
+    <title>TensorFlow.Js y dataset Titanic</title>
+    <script type="text/javascript" src="data.json"></script>
+  </head>
+  <style>
+    body {
+      /*color: gray;*/
+      color: #706C5A;
+      font-family: Inconsolata, Courier, monospace;
+      /*font-family: Helvetica;*/
+      font-size: 12px;
+    }
+  </style>
+  <body>
+
+    <div class="slidecontainer">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Titanic.jpg/220px-Titanic.jpg" border="1" width="135">
+      <div  id= "mi_output"></div><p>Valores a pasajero </p>
+      <input type="range" min="1" max="3" value="1" 
+      class="slider" id="Clase" oninput="sliderClase()">
+      <div  id= "Clase_salida"></div><p> __________________ </p>
+      <input type="range" min="1" max="100" value="28" 
+      class="slider" id="edadslider" oninput="sliderChangeEdad()">
+      <div  id= "edad"></div><p> __________________ </p>
+      <input type="range" min="1" max="200" value="80" 
+      class="slider" id="Tarifa" oninput="sliderChangeTarifa()">
+      <div  id= "tarifa_salida"></div><p> __________________ </p>
+    </div>
+    
+    
+<!--     <select id="sexo">
+    <option value="M">Masculino</option>
+    <option value="F">Femenino</option>
+    </select><BR> -->
+
+
+    <select id="sexo"> 
+    <option value="M">Masculino 
+    <option value="F">Femenino 
+    </select><BR><!-- <p> ___________________ </p> -->
+    </div>
+<!--     <div  id= "edadout"></div> -->
+<!--     <input type="button" value="Evaluar 1" onmousedown="hacer_click1(this)">
+    <input type="button" value="Evaluar 2" onmousedown="hacer_click2(this)"> -->
+    <input type="button" value="Evaluar" OnMousedown="hacer_click3(this)">
+    <div  id= "output_field"></div>
+    
+
+  </body>
+    <script>
+    // algunos datos de entrada.    
+    var var_edad = 28;
+    var var_clase = 1;
+    var var_Tarifa = 80;
+    
+    // definición del modelo
+    const model = tf.sequential();
+    //algunos tensores para evaluar
+    var vivo = tf.tensor2d([200.525, 0, 1, 28, 1, 1, 0],[1, 7]);
+    var muerto = tf.tensor2d([49.5042, 0, 1, 78 , 0, 0, 1],[1, 7]);
+    var edad = tf.tensor2d([10.5042, 0, 3, 55 , 0, 1, 0],[1, 7]);
+
+    //definición de la valores de los sliders
+    var slider_edad = document.getElementById('edadslider');
+    var slider_clase = document.getElementById('Clase');
+    var slider_Tarifa = document.getElementById('Tarifa');
+
+    async function sliderChangeEdad() {
+
+      document.getElementById('edad').innerHTML = "Edad : "+ slider_edad.value;
+
+    }
+
+    async function sliderClase() {
+
+      document.getElementById('Clase_salida').innerHTML = "Clase : "+ slider_clase.value;
+ 
+    }
+
+    async function sliderChangeTarifa() {
+
+      document.getElementById('tarifa_salida').innerHTML = "Tarifa : "+ slider_Tarifa.value;
+
+    }
+
+    async function inicio(){
+      document.getElementById('edad').innerHTML = "Edad : " + var_edad;
+      document.getElementById('Clase_salida').innerHTML = "Clase : " + var_clase;
+      document.getElementById('tarifa_salida').innerHTML = "Tarifa : "+ var_Tarifa;
+      //var sexo_selected = "M";
+    }
+
+    async function ver_edad(){
+      //document.getElementById('edadout').innerHTML = slider_var.value;
+      var sexo_selected = document.getElementById("sexo").value;
+      //alert(x);
+      if (sexo_selected == "M"){
+        edad = tf.tensor2d([slider_Tarifa.value, 0, slider_clase.value, slider_edad.value , 0, 1, 0],[1, 7]);
+      }else{
+        edad = tf.tensor2d([slider_Tarifa.value, 0, slider_clase.value, slider_edad.value , 0, 0, 1],[1, 7]);
+      }
+    }
+
+    async function hacer_click3(){
+       //alert("Me haz dado un click");
+      //var mi_edad = document.getElementById('edad');
+      ver_edad();
+      var salida = "Probabilidades:" + "\n"
+      salida += "Prob. de vida : " + (model.predict(edad).dataSync()[0]*100).toFixed(1) + "%\n"
+      salida +="Prob. de muerte : " + (model.predict(edad).dataSync()[1]*100).toFixed(1) + "%\n"
+      //salida +="Iris virginica : " + (model.predict(mi_test_data).dataSync()[2]*100).toFixed(1) + "%\n"
+      document.getElementById( 'output_field' ).innerText = salida ;
+            
+    }
+
+    //import * as tf from "@tensorflow/tfjs";
+
+    var train_data = data;
+
+ 
+    async  function  learnLinear(){
+  
+      const trainingData = tf.tensor2d(train_data.map(item => [
+        item.fare, item.parch, item.pclass, item.age,item.sibsp,
+        item.sex === "female" ? 1 : 0,
+        item.sex === "male" ? 1 : 0,       
+      ]))
+      const outputData = tf.tensor2d(train_data.map(item => [
+        item.survived === 0 ? 1:0,
+        item.survived === 1 ? 1:0,
+      ]))
+
+      //fare, parch, pclass, age, sibsp, female, male
+      
+      model.add(tf.layers.dense({inputShape: [7],activation: "relu",units: 7,}))
+      model.add(tf.layers.dense({inputShape: [7],activation: "relu",units: 28,}))
+      model.add(tf.layers.dense({inputShape: [7],activation: "relu",units: 28,}))
+      model.add(tf.layers.dense({activation: "sigmoid",units: 2,}))
+
+      model.compile({loss: "meanSquaredError",  metrics: ['accuracy'], optimizer: tf.train.adam(.06),})
+
+      //https://github.com/CodingTrain/website/tree/master/Courses/intelligence_learning/session7/07_11_color_classifier
+      //model.fit(X, Y, epochs=50, verbose=2, batch_size=20)
+      model.fit(trainingData, outputData, {epochs: 40, validationSplit: 0.1, callbacks : {
+            //onTrainBegin: () => document.getElementById( 'mi_output' ).innerText = "inicio",
+             onEpochEnd: async(epoch, logs) => {
+              //document.getElementById( 'mi_output' ).innerText = "termino epoca" //si funca
+              //document.getElementById( 'mi_output' ).innerText = logs.loss//imprime la pardida
+              document.getElementById( 'mi_output' ).innerText = "Aprendizaje  : " + 
+              (logs.acc*100).toFixed(1) + "%" //% de apendizaje (metrics: ['accuracy'])
+            }
+          }},)
+        .then((history) => {
+          //history.print()
+          //console.log(results.history.loss)
+          //document.getElementById( 'mi_output' ).innerText = history.loss//.data()//[1]//.get(1)
+          //document.getElementById( 'output_field' ).innerText = history.dataSync()[0]
+      //const accuracy = history.history.acc[0]
+      //escribiendo los resultados para mi_test_data
+          })
+
+    //
+     
+      }
+
+      function  validad(){
+
+      var salida = "Los resultados son:" + "\n"
+      salida += "vivo   : " + (model.predict(muerto).dataSync()[0]*100).toFixed(1) + "%\n"
+      salida +="muerto : " + (model.predict(muerto).dataSync()[1]*100).toFixed(1) + "%\n"
+      //salida +="Iris virginica : " + (model.predict(mi_test_data).dataSync()[2]*100).toFixed(1) + "%\n"
+      document.getElementById( 'output_field' ).innerText = salida ;
+
+      }
+
+    learnLinear();
+    inicio();
+    </script>
+<html>
+
