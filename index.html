@@ -13,6 +13,8 @@
       /*font-family: monospace;*/
       font-size: 12px;
     }
+    white-space: nowrap;
+
   </style>
   <body>
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Titanic.jpg/220px-Titanic.jpg" border="1" width="135">
@@ -37,10 +39,10 @@
     <!-- </div> -->
     
     
-    <select id="sexo">
-    <option value="F">Femenino  
-    <option value="M">Masculino  
-    </select>
+    Sexo: <select id="sexo">
+    <option value="F">Mujer  
+    <option value="M">Hombre  
+    </select><h5>Use el concepto </BR>de sexo biológico.</h5>
     <!-- </div> -->
 
     <input type="button" value="Evaluar" OnMousedown="hacer_click3(this)">
@@ -67,7 +69,13 @@
     }
     async function sliderClase() {
 
-      document.getElementById('Clase_salida').innerHTML = "Clase : "+ slider_clase.value;
+      if (slider_clase.value== 1){
+        document.getElementById('Clase_salida').innerHTML = "1ra Clase ";
+      }else if (slider_clase.value== 2){
+        document.getElementById('Clase_salida').innerHTML = "2da Clase ";
+      }else{
+        document.getElementById('Clase_salida').innerHTML = "3ra Clase ";
+      }
  
     }
 
@@ -92,7 +100,13 @@
 
     async function inicio(){
       document.getElementById('edad').innerHTML = "Edad : " + var_edad;
-      document.getElementById('Clase_salida').innerHTML = "Clase : " + var_clase;
+      if (slider_clase.value== 1){
+        document.getElementById('Clase_salida').innerHTML = "1ra Clase ";
+      }else if (slider_clase.value== 2){
+        document.getElementById('Clase_salida').innerHTML = "2da Clase ";
+      }else{
+        document.getElementById('Clase_salida').innerHTML = "3ra Clase ";
+      }
       document.getElementById('tarifa_salida').innerHTML = "Tarifa : "+ var_Tarifa;
       //var sexo_selected = "M";
     }
