@@ -98,7 +98,7 @@
       //pclass,sex,age,sibsp,parch,fare
       ver_edad();
     
-      var model = await tf.loadModel("https://raw.githubusercontent.com/sandroormeno/sim800L/master/imagenes/model.json");
+      var model = await tf.loadModel("https://raw.githubusercontent.com/sandroormeno/TensorFlowJsTitanic/master/model/model.json");
       var salida = "Probabilidades:" + "\n"
       salida += "Prob. de vida   : " + (model.predict(muerto).dataSync()[0]*100).toFixed(1) + "%\n"
       salida +="Prob. de muerte : " + (model.predict(muerto).dataSync()[1]*100).toFixed(1) + "%\n"
@@ -111,7 +111,7 @@
     async function hacer_click3(){
 
       ver_edad();
-      var model = await tf.loadModel("https://raw.githubusercontent.com/sandroormeno/sim800L/master/imagenes/model.json");
+      var model = await tf.loadModel("https://raw.githubusercontent.com/sandroormeno/TensorFlowJsTitanic/master/model/model.json");
       var salida = "Probabilidades:" + "\n"
       salida += "Prob. de vida : " + (model.predict(muerto).dataSync()[0]*100).toFixed(1) + "%\n"
       salida +="Prob. de muerte : " + (model.predict(muerto).dataSync()[1]*100).toFixed(1) + "%\n"
