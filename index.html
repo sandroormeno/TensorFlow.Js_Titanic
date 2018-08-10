@@ -36,7 +36,16 @@
       class="slider" id="Tarifa" oninput="sliderChangeTarifa()">
 
     <div  id= "tarifa_salida"></div><!-- <p> ___________________ </p> -->
-    <!-- </div> -->
+
+    <input type="range" min="0" max="8" value="0" 
+      class="slider" id="SibSp" oninput="sliderChangeSibSp()">
+
+    <div  id= "SibSp_salida"></div>
+
+    <input type="range" min="0" max="10" value="0" 
+      class="slider" id="parch" oninput="sliderChangeparch()">
+
+    <div  id= "parch_salida"></div>
     
     
     Sexo: <select id="sexo">
@@ -55,12 +64,16 @@
     var var_edad = 28;
     var var_clase = 1;
     var var_Tarifa = 200;
+    var var_SibSp = 0;
+    var var_parch = 0;
 
 
     //definición de la valores de los sliders
     var slider_edad = document.getElementById('edadslider');
     var slider_clase = document.getElementById('Clase');
     var slider_Tarifa = document.getElementById('Tarifa');
+    var slider_SibSp = document.getElementById('SibSp');
+    var slider_parch = document.getElementById('parch');
 
     async function sliderChangeEdad() {
 
@@ -92,10 +105,22 @@
 
       //pclass,sex,age,sibsp,parch,fare
       if (sexo_selected == "M"){
-        muerto = tf.tensor2d([slider_clase.value,1,slider_edad.value,0,0,slider_Tarifa.value],[1, 6]);
+        muerto = tf.tensor2d([slider_clase.value,1,slider_edad.value,slider_SibSp.value,slider_parch.value,slider_Tarifa.value],[1, 6]);
       }else{
-        muerto = tf.tensor2d([slider_clase.value,0,slider_edad.value,0,0,slider_Tarifa.value],[1, 6]);
+        muerto = tf.tensor2d([slider_clase.value,0,slider_edad.value,slider_SibSp.value,slider_parch.value,slider_Tarifa.value],[1, 6]);
       }
+    }
+
+    async function sliderChangeSibSp() {
+
+      document.getElementById('SibSp_salida').innerHTML = "Hno(a) y/o Eo(a) : "+ slider_SibSp.value;
+
+    }
+
+    async function sliderChangeparch() {
+
+      document.getElementById('parch_salida').innerHTML = "Padres y/o hijes : "+ slider_parch.value;
+
     }
 
     async function inicio(){
@@ -108,7 +133,9 @@
         document.getElementById('Clase_salida').innerHTML = "3ra Clase ";
       }
       document.getElementById('tarifa_salida').innerHTML = "Tarifa : "+ var_Tarifa;
-      //var sexo_selected = "M";
+      document.getElementById('SibSp_salida').innerHTML = "Hno(a) y/o Eo(a) : "+ var_SibSp;
+      document.getElementById('parch_salida').innerHTML = "Padres y/o hijes : "+ var_parch ;
+      
     }
     
  
